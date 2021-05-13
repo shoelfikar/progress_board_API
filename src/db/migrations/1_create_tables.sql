@@ -1,0 +1,35 @@
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR ( 50 ) UNIQUE NOT NULL,
+    password VARCHAR ( 255 ) NOT NULL,
+    email VARCHAR ( 100 ) UNIQUE NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
+);
+
+
+CREATE TABLE IF NOT EXISTS board (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    board_name VARCHAR ( 100 ) UNIQUE NOT NULL,
+    description TEXT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_user
+        FOREIGN KEY(user_id) 
+        REFERENCES users(id)
+);
+DROP TYPE IF EXISTS progres;
+CREATE TYPE progres AS ENUM('todo', 'on_progress', 'done');
+CREATE TABLE IF NOT EXISTS task (
+    id SERIAL PRIMARY KEY,
+    board_id INT NOT NULL,
+    task_name VARCHAR ( 100 ) UNIQUE NOT NULL,
+    description TEXT NULL,
+    progress progres NOT NULL DEFAULT 'todo',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_board
+        FOREIGN KEY(board_id) 
+        REFERENCES board(id)
+);
